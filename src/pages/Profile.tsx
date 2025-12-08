@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import BottomNav from "../components/BottomNav";
 import { getUserProfile, updateUserProfile } from "../services/userService";
 import { poiService } from "../services/poiService";
+import { getUserActivities } from "../services/activityService";
 
 interface UserData {
   id: string;
@@ -49,13 +50,7 @@ const Profile: React.FC = () => {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/sessions/history`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (!res.ok) return;
-
-      const data = await res.json();
+      const data = await getUserActivities(token);
       if (Array.isArray(data)) setRoutesCount(data.length);
     } catch (err) {
       console.error("❌ Error al obtener historial de rutas:", err);
@@ -63,7 +58,7 @@ const Profile: React.FC = () => {
   };
 
   fetchRoutesCount();
-}, []);
+}, []); // ⚡ solo al montar, funciona porque getUserActivities ya usa el toke
 
   // POIs del usuario (no tocar)
   useEffect(() => {
