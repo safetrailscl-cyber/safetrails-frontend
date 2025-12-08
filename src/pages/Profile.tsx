@@ -46,17 +46,21 @@ const Profile: React.FC = () => {
   // Historial de rutas
   useEffect(() => {
     const fetchHistory = async () => {
-      if (!user) return; // ⚡ esperar a que user esté cargado
+      if (!user) return; // esperar a que user esté cargado
       try {
-        const activities = await getUserActivities(user.id); // ⚡ usar userId
-        if (Array.isArray(activities)) setRoutesCount(activities.length);
-        else if (Array.isArray(activities.history)) setRoutesCount(activities.history.length);
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const data = await getUserActivities(user.id, token); // ⚡ ahora enviamos el token
+        if (Array.isArray(data)) setRoutesCount(data.length);
+        else if (Array.isArray(data.history)) setRoutesCount(data.history.length);
       } catch (error) {
         console.error("❌ Error al obtener historial:", error);
       }
     };
     fetchHistory();
   }, [user]);
+
 
   // POIs del usuario (sin cambios)
   useEffect(() => {
