@@ -41,7 +41,7 @@ const Profile: React.FC = () => {
     fetchUserData();
   }, [navigate]);
 
-  // POIs del usuario (no tocar)
+  // POIs del usuario
   useEffect(() => {
     const fetchPOIs = async () => {
       try {
@@ -57,7 +57,6 @@ const Profile: React.FC = () => {
     fetchPOIs();
   }, []);
 
-  // Funciones para editar perfil
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!user) return;
     const { name, value } = e.target;
@@ -114,7 +113,9 @@ const Profile: React.FC = () => {
           onClick={() => navigate("/history")}
           className="bg-white shadow-md rounded-lg p-4 flex items-center justify-center cursor-pointer hover:bg-gray-100 transition h-24"
         >
-          <span className="text-gray-400 text-sm text-center">Rutas Completadas</span>
+          <span className="text-gray-400 text-sm text-center">
+            Rutas Completadas
+          </span>
         </div>
 
         <div className="bg-white shadow-md rounded-lg p-4 flex flex-col items-center">
