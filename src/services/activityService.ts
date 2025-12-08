@@ -7,9 +7,9 @@ export const getUserActivities = async (token: string) => {
     const response = await axios.get(`${API_URL}/sessions/history`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    return response.data; // ⚡ se asume que el backend devuelve un array
+    return response.data;
   } catch (error) {
     console.error("Error al obtener las actividades del usuario:", error);
-    return []; // ⚡ evitar que rompa la UI
+    throw error;
   }
 };

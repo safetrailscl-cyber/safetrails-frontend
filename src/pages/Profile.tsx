@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import BottomNav from "../components/BottomNav";
 import { getUserProfile, updateUserProfile } from "../services/userService";
 import { poiService } from "../services/poiService";
-import { getUserActivities } from "../services/activityService";
 
 interface UserData {
   id: string;
@@ -45,20 +44,30 @@ const Profile: React.FC = () => {
 
   // Historial de rutas
   useEffect(() => {
-  const fetchRoutesCount = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) return;
+    const fetchRoutesCount = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
 
-      const data = await getUserActivities(token);
-      if (Array.isArray(data)) setRoutesCount(data.length);
-    } catch (err) {
-      console.error("❌ Error al obtener historial de rutas:", err);
-    }
-  };
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/sessions/history`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-  fetchRoutesCount();
-}, []); // ⚡ solo al montar, funciona porque getUserActivities ya usa el toke
+        if (!res.ok) return;
+
+        const data = await res.json();
+
+        if (Array.isArray(data)) setRoutesCount(data.length);
+        else if (data && Array.isArray(data.history)) setRoutesCount(data.history.length);
+        else setRoutesCount(0);
+      } catch (err) {
+        console.error("❌ Error al obtener historial de rutas:", err);
+        setRoutesCount(0);
+      }
+    };
+
+    fetchRoutesCount();
+  }, []);
 
   // POIs del usuario (no tocar)
   useEffect(() => {
