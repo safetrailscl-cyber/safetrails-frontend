@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BottomNav from "../components/BottomNav";
 import { getUserProfile, updateUserProfile } from "../services/userService";
+import { getUserActivities } from "../services/activityService";
+import { poiService } from "../services/poiService";
 
 interface UserData {
+  id: string; // ⚡ asegurarte de que user.id exista
   name: string;
   email: string;
   phoneNumber?: string;
@@ -20,6 +23,7 @@ const Profile: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
+  // Datos del usuario
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -39,19 +43,12 @@ const Profile: React.FC = () => {
     fetchUserData();
   }, [navigate]);
 
+  // Historial de rutas
   useEffect(() => {
     const fetchHistory = async () => {
+      if (!user) return; // ⚡ esperar a que user esté cargado
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        const response = await fetch("http://localhost:4000/api/sessions/history", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        if (!response.ok) return;
-
-        const data = await response.json();
+        const data = await getUserActivities(user.id); // ⚡ usar userId
         if (Array.isArray(data)) setRoutesCount(data.length);
         else if (Array.isArray(data.history)) setRoutesCount(data.history.length);
       } catch (error) {
@@ -59,30 +56,25 @@ const Profile: React.FC = () => {
       }
     };
     fetchHistory();
-  }, []);
+  }, [user]);
 
+  // POIs del usuario
   useEffect(() => {
     const fetchPOIs = async () => {
       try {
         const token = localStorage.getItem("token");
         if (!token) return;
 
-        const response = await fetch("http://localhost:4000/api/poi/my", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        if (!response.ok) return;
-
-        const data = await response.json();
+        const { data } = await poiService.getAll(token);
         if (Array.isArray(data)) setPoiCount(data.length);
       } catch (err) {
         console.error("❌ Error al obtener POIs:", err);
       }
     };
-
     fetchPOIs();
   }, []);
 
+  // Funciones para editar perfil
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!user) return;
     const { name, value } = e.target;
@@ -127,8 +119,7 @@ const Profile: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center py-8 px-4 pb-16">
-
-      {/* Header SIN AVATAR */}
+      {/* Header */}
       <div className="w-full max-w-md flex flex-col items-center mb-6">
         <h1 className="text-3xl font-semibold">{user?.name || "Cargando..."}</h1>
         <p className="text-gray-500">{user?.email || ""}</p>
