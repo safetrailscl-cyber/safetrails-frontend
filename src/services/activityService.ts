@@ -1,8 +1,7 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:4000/api/activities"; // 👈 cambia si tu backend usa otro dominio o puerto
+const API_URL = import.meta.env.VITE_API_URL;
 
-// Obtener todas las rutas de un usuario
 export const getUserActivities = async (userId: string) => {
   try {
     const response = await axios.get(`${API_URL}/user/${userId}`);
