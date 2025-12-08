@@ -48,9 +48,9 @@ const Profile: React.FC = () => {
     const fetchHistory = async () => {
       if (!user) return; // ⚡ esperar a que user esté cargado
       try {
-        const data = await getUserActivities(user.id); // ⚡ usar userId
-        if (Array.isArray(data)) setRoutesCount(data.length);
-        else if (Array.isArray(data.history)) setRoutesCount(data.history.length);
+        const activities = await getUserActivities(user.id); // ⚡ usar userId
+        if (Array.isArray(activities)) setRoutesCount(activities.length);
+        else if (Array.isArray(activities.history)) setRoutesCount(activities.history.length);
       } catch (error) {
         console.error("❌ Error al obtener historial:", error);
       }
@@ -58,7 +58,7 @@ const Profile: React.FC = () => {
     fetchHistory();
   }, [user]);
 
-  // POIs del usuario
+  // POIs del usuario (sin cambios)
   useEffect(() => {
     const fetchPOIs = async () => {
       try {
