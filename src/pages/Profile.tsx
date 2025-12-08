@@ -6,7 +6,7 @@ import { getUserActivities } from "../services/activityService";
 import { poiService } from "../services/poiService";
 
 interface UserData {
-  id: string; // ⚡ asegurarte de que user.id exista
+  id: string;
   name: string;
   email: string;
   phoneNumber?: string;
@@ -46,23 +46,20 @@ const Profile: React.FC = () => {
   // Historial de rutas
   useEffect(() => {
     const fetchHistory = async () => {
-      if (!user) return; // esperar a que user esté cargado
       try {
         const token = localStorage.getItem("token");
         if (!token) return;
 
-        const data = await getUserActivities(user.id, token); // ⚡ ahora enviamos el token
+        const data = await getUserActivities(token);
         if (Array.isArray(data)) setRoutesCount(data.length);
-        else if (Array.isArray(data.history)) setRoutesCount(data.history.length);
       } catch (error) {
         console.error("❌ Error al obtener historial:", error);
       }
     };
     fetchHistory();
-  }, [user]);
+  }, []);
 
-
-  // POIs del usuario (sin cambios)
+  // POIs del usuario (no tocar)
   useEffect(() => {
     const fetchPOIs = async () => {
       try {
