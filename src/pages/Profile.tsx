@@ -101,6 +101,7 @@ const Profile: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center py-8 px-4 pb-16">
+
       {/* Header */}
       <div className="w-full max-w-md flex flex-col items-center mb-6">
         <h1 className="text-3xl font-semibold">{user?.name || "Cargando..."}</h1>
@@ -109,15 +110,16 @@ const Profile: React.FC = () => {
 
       {/* Stats */}
       <div className="w-full max-w-md grid grid-cols-2 gap-4 mb-8">
-        {/* Rutas Completadas SIN CONTADOR */}
-        <div
+
+        {/* Rutas Completadas como BOTÓN SIN CONTADOR */}
+        <button
           onClick={() => navigate("/history")}
           className="bg-white shadow-md rounded-lg p-4 flex items-center justify-center cursor-pointer hover:bg-gray-100 transition h-24"
         >
           <span className="text-gray-400 text-sm text-center">
             Rutas Completadas
           </span>
-        </div>
+        </button>
 
         {/* POIs */}
         <div className="bg-white shadow-md rounded-lg p-4 flex flex-col items-center">

@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useRef, useState } from "r
 import axios from "axios";
 import { useAlarm } from "./AlarmContext";
 
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 export interface Coordinate {
   lat: number;
