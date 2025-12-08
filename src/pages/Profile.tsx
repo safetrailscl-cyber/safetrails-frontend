@@ -109,6 +109,7 @@ const Profile: React.FC = () => {
 
       {/* Stats */}
       <div className="w-full max-w-md grid grid-cols-2 gap-4 mb-8">
+        {/* Rutas Completadas SIN CONTADOR */}
         <div
           onClick={() => navigate("/history")}
           className="bg-white shadow-md rounded-lg p-4 flex items-center justify-center cursor-pointer hover:bg-gray-100 transition h-24"
@@ -118,6 +119,7 @@ const Profile: React.FC = () => {
           </span>
         </div>
 
+        {/* POIs */}
         <div className="bg-white shadow-md rounded-lg p-4 flex flex-col items-center">
           <span className="text-gray-400 text-sm">POIs Creados</span>
           <span className="text-xl font-bold mt-2">{poiCount}</span>
