@@ -1,0 +1,2 @@
+import "leaflet/dist/leaflet.css";
+export default function MapPage(): import("react/jsx-runtime").JSX.Element;
