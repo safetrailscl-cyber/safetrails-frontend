@@ -16,7 +16,6 @@ interface UserData {
 const Profile: React.FC = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<UserData | null>(null);
-  const [routesCount, setRoutesCount] = useState<number>(0);
   const [poiCount, setPoiCount] = useState<number>(0);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -41,33 +40,6 @@ const Profile: React.FC = () => {
     };
     fetchUserData();
   }, [navigate]);
-
-  // Historial de rutas
-  useEffect(() => {
-    const fetchRoutesCount = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/sessions/history`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        if (!res.ok) return;
-
-        const data = await res.json();
-
-        if (Array.isArray(data)) setRoutesCount(data.length);
-        else if (data && Array.isArray(data.history)) setRoutesCount(data.history.length);
-        else setRoutesCount(0);
-      } catch (err) {
-        console.error("❌ Error al obtener historial de rutas:", err);
-        setRoutesCount(0);
-      }
-    };
-
-    fetchRoutesCount();
-  }, []);
 
   // POIs del usuario (no tocar)
   useEffect(() => {
@@ -140,10 +112,9 @@ const Profile: React.FC = () => {
       <div className="w-full max-w-md grid grid-cols-2 gap-4 mb-8">
         <div
           onClick={() => navigate("/history")}
-          className="bg-white shadow-md rounded-lg p-4 flex flex-col items-center cursor-pointer hover:bg-gray-100 transition"
+          className="bg-white shadow-md rounded-lg p-4 flex items-center justify-center cursor-pointer hover:bg-gray-100 transition h-24"
         >
-          <span className="text-gray-400 text-sm">Rutas Completadas</span>
-          <span className="text-xl font-bold mt-2">{routesCount}</span>
+          <span className="text-gray-400 text-sm text-center">Rutas Completadas</span>
         </div>
 
         <div className="bg-white shadow-md rounded-lg p-4 flex flex-col items-center">
