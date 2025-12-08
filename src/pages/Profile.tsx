@@ -6,7 +6,7 @@ import { getUserActivities } from "../services/activityService";
 import { poiService } from "../services/poiService";
 
 interface UserData {
-  id: string; // ⚡ mapear _id si es necesario
+  id: string; // ⚡ asegurarte de que user.id exista
   name: string;
   email: string;
   phoneNumber?: string;
@@ -33,14 +33,7 @@ const Profile: React.FC = () => {
           return;
         }
         const data = await getUserProfile(token);
-        setUser({
-          id: data.id || data._id,
-          name: data.name,
-          email: data.email,
-          phoneNumber: data.phoneNumber,
-          emergencyContactName: data.emergencyContactName,
-          emergencyContactPhone: data.emergencyContactPhone,
-        });
+        setUser(data);
       } catch (error) {
         console.error("❌ Error al obtener datos del usuario:", error);
       } finally {
@@ -53,14 +46,13 @@ const Profile: React.FC = () => {
   // Historial de rutas
   useEffect(() => {
     const fetchHistory = async () => {
-      if (!user) return;
+      if (!user) return; // ⚡ esperar a que user esté cargado
       try {
-        const data = await getUserActivities(user.id); // ⚡ obtener array directo
+        const data = await getUserActivities(user.id); // ⚡ usar userId
         if (Array.isArray(data)) setRoutesCount(data.length);
-        else setRoutesCount(0);
+        else if (Array.isArray(data.history)) setRoutesCount(data.history.length);
       } catch (error) {
         console.error("❌ Error al obtener historial:", error);
-        setRoutesCount(0);
       }
     };
     fetchHistory();
@@ -154,24 +146,53 @@ const Profile: React.FC = () => {
         <h2 className="text-lg font-semibold mb-4">Información personal</h2>
 
         <div className="space-y-3">
-          {["name","phoneNumber","emergencyContactName","emergencyContactPhone"].map((field) => (
-            <div key={field}>
-              <label className="text-gray-600 font-medium">
-                {field === "name" ? "Nombre" :
-                 field === "phoneNumber" ? "Teléfono" :
-                 field === "emergencyContactName" ? "Contacto de emergencia" :
-                 "Teléfono de emergencia"}
-              </label>
-              <input
-                type="text"
-                name={field}
-                value={user?.[field as keyof UserData] || ""}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 disabled:bg-gray-100"
-              />
-            </div>
-          ))}
+          <div>
+            <label className="text-gray-600 font-medium">Nombre</label>
+            <input
+              type="text"
+              name="name"
+              value={user?.name || ""}
+              onChange={handleChange}
+              disabled={!isEditing}
+              className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 disabled:bg-gray-100"
+            />
+          </div>
+
+          <div>
+            <label className="text-gray-600 font-medium">Teléfono</label>
+            <input
+              type="text"
+              name="phoneNumber"
+              value={user?.phoneNumber || ""}
+              onChange={handleChange}
+              disabled={!isEditing}
+              className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 disabled:bg-gray-100"
+            />
+          </div>
+
+          <div>
+            <label className="text-gray-600 font-medium">Contacto de emergencia</label>
+            <input
+              type="text"
+              name="emergencyContactName"
+              value={user?.emergencyContactName || ""}
+              onChange={handleChange}
+              disabled={!isEditing}
+              className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 disabled:bg-gray-100"
+            />
+          </div>
+
+          <div>
+            <label className="text-gray-600 font-medium">Teléfono de emergencia</label>
+            <input
+              type="text"
+              name="emergencyContactPhone"
+              value={user?.emergencyContactPhone || ""}
+              onChange={handleChange}
+              disabled={!isEditing}
+              className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 disabled:bg-gray-100"
+            />
+          </div>
         </div>
 
         {!isEditing ? (
