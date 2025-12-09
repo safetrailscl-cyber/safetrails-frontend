@@ -37,11 +37,11 @@ interface POIContextType {
 }
 
 /* ---------------- Valores por defecto ---------------- */
-
+/* 🔥 Nuevo radio global para todos los POI = 120 metros */
 const DEFAULT_RADIUS: RadiusConfig = {
-  ten_precaucion: 5,
-  reduce_velocidad: 10,
-  cuidado: 15,
+  ten_precaucion: 120,
+  reduce_velocidad: 120,
+  cuidado: 120,
 };
 
 /* ---------------- Contexto ---------------- */
@@ -68,6 +68,7 @@ export const POIProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   /* Normalización segura */
+  /* 🔥 NORMALIZACIÓN MODIFICADA PARA IGNORAR radius DE BD Y USAR SIEMPRE 120m */
   const normalizePOI = (raw: any): POIType => {
     const lat = Number(raw.lat);
     const lng = Number(raw.lng);
@@ -79,8 +80,8 @@ export const POIProvider = ({ children }: { children: React.ReactNode }) => {
         ? raw.category
         : "ten_precaucion";
 
-    const radius =
-      raw.radius != null ? Number(raw.radius) : radiusConfig[category];
+    // 🔥 Forzamos siempre 120 metros sin importar la BD
+    const radius = DEFAULT_RADIUS[category];
 
     return {
       _id: raw._id ?? raw.id,
