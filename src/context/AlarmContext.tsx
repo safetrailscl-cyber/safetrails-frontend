@@ -86,7 +86,7 @@ export const AlarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     for (const poi of pois) {
       const dist = getDistanceFromLatLonInMeters(coord.lat, coord.lng, poi.lat, poi.lng);
       // ✅ Indicar clave explícita
-      const radius = radiusConfig[poi.category as keyof RadiusConfig] ?? 15;
+      const radius = radiusConfig[poi.category as keyof RadiusConfig] ?? 120;
       if (dist <= radius) {
         if (!mostSevere) mostSevere = poi;
         else if (severityOrder[poi.category] > severityOrder[mostSevere.category]) mostSevere = poi;
